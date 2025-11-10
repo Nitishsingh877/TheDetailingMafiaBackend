@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- File Appender -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <!-- <file>C:\Users\nitishsi\Desktop\logger/Logs-theDetaillingMafiacarwash/logging-aspect.txt</file> -->
+        <file>C:\Users\nitishks\Desktop\logger\user-logging-aspect.txt</file>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logger for LoggingAspect to FILE -->
+    <logger name="com.thederailingmafia.carwash.user_service.logger.LoggingAspect" level="INFO" additivity="false">
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- Console Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Duplicate Logger for LoggingAspect (valid XML even though duplicate) -->
+    <logger name="com.thederailingmafia.carwash.user_service.logger.LoggingAspect" level="INFO" additivity="false">
+        <!-- <appender-ref ref="CONSOLE"/> -->
+        <appender-ref ref="FILE"/>
+    </logger>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

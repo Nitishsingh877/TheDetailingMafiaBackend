@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Accepted by Washer</title>
+</head>
+<body style="font-family: Arial; background-color: #f6f8fa; padding: 20px;">
+<div style="background: white; padding: 30px; border-radius: 10px;">
+    <h2>Great News!</h2>
+    <p>Washer <strong th:text="${washerName}">Washer</strong> has accepted your order <strong th:text="${orderId}">#ORDERID</strong>.</p>
+    <p>They will begin processing it shortly.</p>
+</div>
+</body>
+</html>

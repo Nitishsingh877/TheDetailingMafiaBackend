@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment Confirmation</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; min-height: 100vh; margin: 0; background-color: #f4f6f8; }
+        .payment-container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); width: 400px; max-width: 90%; }
+        h1 { text-align: center; color: #333; margin-bottom: 20px; }
+        #card-element { border: 1px solid #ddd; padding: 12px; border-radius: 4px; margin-bottom: 20px; background-color: #f7f7f7; min-height: 40px; }
+        button#submit { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+        button#submit:hover { background-color: #218838; }
+        #error-message { color: #dc3545; margin-top: 10px; font-size: 14px; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="payment-container">
+    <h1>Secure Payment Details</h1>
+    <form id="payment-form">
+        <div id="card-element"></div>
+        <button id="submit">Pay Now</button>
+        <div id="error-message"></div>
+    </form>
+</div>
+
+<script>
+    console.log('Loading Stripe.js...');
+    const stripe = Stripe('pk_test_51RCymHPFVzgXMQKcVVMnYLQRXycYvtsfYKwiJPoLepHcYjIXRMTRBx73Ivd7yfosqyJs3ZwHyAsQcL147aLHyMhw008x2PP69o');
+    console.log('Stripe initialized:', stripe);
+
+    const elements = stripe.elements();
+    console.log('Elements created:', elements);
+
+    const card = elements.create('card', {
+        style: { base: { fontSize: '16px', color: '#32325d', '::placeholder': { color: '#aab7c4' } } }
+    });
+    console.log('Card element created:', card);
+
+    try {
+        card.mount('#card-element');
+        console.log('Card mounted to #card-element');
+    } catch (err) {
+        console.error('Error mounting card:', err);
+        document.getElementById('error-message').textContent = 'Failed to load card input: ' + err.message;
+    }
+
+    const clientSecret = 'pi_3RDAe2PFVzgXMQKc1Ef7fA7I_secret_S1YP9E5GHG28Cx6cceLK6pRdY'; // Replace with actual secret
+    const form = document.getElementById('payment-form');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        console.log('Submitting payment with clientSecret:', clientSecret);
+
+        document.getElementById('submit').disabled = true;
+        document.getElementById('error-message').textContent = 'Processing...';
+
+        try {
+            const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: { card: card }
+            });
+
+            if (error) {
+                console.error('Stripe error:', error);
+                document.getElementById('error-message').textContent = error.message;
+                document.getElementById('submit').disabled = false;
+            } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+                console.log('Payment succeeded:', paymentIntent);
+                alert('Payment succeeded!');
+                try {
+                    const confirmResponse = await fetch('http://localhost:8086/api/payments/confirm/' + paymentIntent.id, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJhYmMxMjIyQGdtYWlsLmNvbSIsInJvbGUiOiJXQVNIRVIiLCJpYXQiOjE3NDQ0ODE2NTksImV4cCI6MTc0NDU2ODA1OX0.49_E-g0TP99Upm0eDoClS5Bs1qG8jmiDPvDNmy6oXwV_BO4JAgW5ZQmMBYDODNI_', // Replace if expired
+                            'Content-Type': 'application/json',
+                            'X-User-Email': 'abc1222@gmail.com'
+                        }
+                    });
+                    if (!confirmResponse.ok) {
+                        throw new Error(`Confirm endpoint failed: ${confirmResponse.status}`);
+                    }
+                    const data = await confirmResponse.json();
+                    console.log('Confirmation response:', data);
+                    alert('Order completed: ' + JSON.stringify(data));
+                } catch (err) {
+                    console.error('Confirmation error:', err);
+                    document.getElementById('error-message').textContent = 'Failed to confirm order: ' + err.message;
+                    document.getElementById('submit').disabled = false;
+                }
+            }
+        } catch (err) {
+            console.error('Payment error:', err);
+            document.getElementById('error-message').textContent = 'Payment failed: ' + err.message;
+            document.getElementById('submit').disabled = false;
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+spring:
+  application.name=DiscoveryService
+
+server:
+  port: 8761 # Default Eureka port
+
+eureka:
+  client:
+    register-with-eureka: false # Eureka server doesn?t register itself
+    fetch-registry: false       # Doesn?t fetch registry as it?s the registry
+  instance:
+    hostname: localhost

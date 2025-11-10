@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Invoice Generated</title>
+</head>
+<body style="font-family: Arial; background-color: #f6f8fa; padding: 20px;">
+<div style="background: white; padding: 30px; border-radius: 10px;">
+  <h2>Hi <span th:text="${customerName}">Customer</span>,</h2>
+  <p>An invoice has been generated for your order <strong th:text="${orderId}">#ORDERID</strong>.</p>
+  <p><strong>Invoice ID:</strong> <span th:text="${invoiceId}">INV123</span></p>
+  <p><strong>Payment ID:</strong> <span th:text="${paymentId}">PAY123</span></p>
+  <p>Please proceed to payment using dashboard.</p>
+</div>
+</body>
+</html>

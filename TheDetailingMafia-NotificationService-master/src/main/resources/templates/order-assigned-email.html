@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Assigned</title>
+</head>
+<body style="font-family: Arial; background-color: #f6f8fa; padding: 20px;">
+<div style="background: white; padding: 30px; border-radius: 10px;">
+    <h2>Hi <span th:text="${customerName}">Customer</span>,</h2>
+    <p>Your order <strong th:text="${orderId}">#ORDERID</strong> has been assigned to washer <strong th:text="${washerName}">Washer</strong>.</p>
+    <p>The washer will be in touch soon to begin the service.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: user-service-route
+          uri: lb://user-service
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=0
+
+        - id: car-service-route
+          uri: lb://car-service
+          predicates:
+              - Path=/api/cars/**
+          filters:
+              - StripPrefix=0
+        - id: booking-service-route
+          uri: lb://booking-service
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - StripPrefix=0
+        - id: washer-service-route
+          uri: lb://washer-service
+          predicates:
+            - Path=/api/washer/**
+          filters:
+            - StripPrefix=0
+        - id: payment-service-route
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payments/**
+          filters:
+            - StripPrefix=0
+        - id: notification-service-route
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/message/**
+          filters:
+            - StripPrefix=0
+
+        - id: Ai-service-route
+          uri: lb://ai-service
+          predicates:
+            - Path=/api/ai/**
+          filters:
+            - StripPrefix=0
+
+        - id: review-service-route
+          uri: lb://review-service
+          predicates:
+            - Path=/api/reviews/**
+          filters:
+            - StripPrefix=0
+
+        - id: media-service-route
+          uri: lb://media-service
+          predicates:
+            - Path=/api/media/**
+          filters:
+            - StripPrefix=0
+            
+        - id: chat-service-route
+          uri: lb://booking-service
+          predicates:
+            - Path=/api/chat/**
+          filters:
+            - StripPrefix=0
+  eureka:
+    client:
+      service-url:
+        defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+server:
+  port: 8080
+  logging:
+    level:
+      org.springframework.cloud.gateway: DEBUG
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+
+#spring:
+#  cloud:
+#    gateway:
+#      globalcors:
+#        corsConfigurations:
+#          '[/**]':
+#            allowedOrigins: "http://localhost:5173"
+#            allowedMethods:
+#              - GET
+#              - POST
+#              - PUT
+#              - DELETE
+#              - OPTIONS
+#            allowedHeaders: "*"
+#            allowCredentials: true
+
+
